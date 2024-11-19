@@ -1,0 +1,20 @@
+# Changes here will be overwritten by Copier
+_commit: 1.5.3
+_src_path: gh:pawamoy/copier-uv
+author_email: zhaoxiaohong@metasota.ai
+author_fullname: Zhao Xiaohong
+author_username: meta-sota
+copyright_date: '2024'
+copyright_holder: MetaSota
+copyright_holder_email: zhaoxiaohong@metasota.ai
+copyright_license: MIT License
+insiders: false
+project_description: The official Python SDK for https://metaso.cn
+project_name: metaso-sdk
+python_package_command_line_name: metaso
+python_package_distribution_name: metaso-sdk
+python_package_import_name: metaso_sdk
+repository_name: metaso-sdk
+repository_namespace: meta-sota
+repository_provider: github.com
+
