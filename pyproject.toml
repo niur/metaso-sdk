@@ -8,7 +8,7 @@ description = "The official Python SDK for https://metaso.cn"
 authors = [{name = "Zhao Xiaohong", email = "zhaoxiaohong@metasota.ai"}]
 license = {text = "MIT"}
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.8"
 keywords = []
 dynamic = ["version"]
 classifiers = [
@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
@@ -28,7 +29,10 @@ classifiers = [
     "Topic :: Utilities",
     "Typing :: Typed",
 ]
-dependencies = []
+dependencies = [
+    "httpx>=0.27.2",
+    "pydantic>=2.10.0",
+]
 
 [project.urls]
 Homepage = "https://meta-sota.github.io/metaso-sdk"
@@ -71,12 +75,10 @@ data = [
 dev-dependencies = [
     # dev
     "editables>=0.5",
-
     # maintenance
     "build>=1.2",
     "git-changelog>=2.5",
     "twine>=5.1",
-
     # ci
     "duty>=1.4",
     "ruff>=0.4",
@@ -87,7 +89,6 @@ dev-dependencies = [
     "mypy>=1.10",
     "types-markdown>=3.6",
     "types-pyyaml>=6.0",
-
     # docs
     "black>=24.4",
     "markdown-callouts>=0.4",
@@ -103,3 +104,6 @@ dev-dependencies = [
     # YORE: EOL 3.10: Remove line.
     "tomli>=2.0; python_version < '3.11'",
 ]
+
+[tool.ruff]
+line-length = 120
