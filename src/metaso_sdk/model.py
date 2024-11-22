@@ -1,25 +1,36 @@
 from typing import Optional
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class Status(BaseModel):
-    code: int = Field(alias="errCode")
-    message: str = Field(alias="errMsg")
+    errCode: int
+    errMsg: str
+
+
+class Query(BaseModel):
+    question: str
+    lang: str = "zh"
+    sessionId: Optional[str] = None
+    thirdPartyUid: Optional[str] = None
+    stream: bool = False
+    engineType: Optional[str] = None
+    topicId: Optional[str] = None
+    searchTopicId: Optional[str] = None
 
 
 class Topic(BaseModel):
-    id: Optional[str]
+    id: Optional[str] = None
     name: str
-    dir_root_id: Optional[str] = Field(alias="dirRootId")
-    description: Optional[str]
+    dirRootId: Optional[str] = None
+    description: Optional[str] = None
 
 
 class File(BaseModel):
     id: Optional[str]
-    name: str = Field(alias="fileName")
-    parent_id: str = Field(alias="parentId")
-    type: str = Field(alias="contentType")
+    fileName: str
+    parentId: str
+    contentType: str
     size: int
-    preview_url: Optional[str] = Field(alias="previewUrl", default="")
-    original_url: Optional[str] = Field(alias="originalUrl")
+    previewUrl: Optional[str] = None
+    originalUrl: Optional[str] = None
     progress: int

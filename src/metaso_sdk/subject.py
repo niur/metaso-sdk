@@ -13,7 +13,7 @@ def delete_topic(topic: Topic) -> bool:
     resp = client.post("/topic/trash", json={"ids": [topic.id]})
     resp.raise_for_status()
     status = Status.model_validate(resp.json())
-    return status.code == 0
+    return status.errCode == 0
 
 
 def upload_file(topic: Topic, file):
@@ -33,4 +33,4 @@ def delete_file(file: File):
     resp = client.post("/file/trash", json={"ids": [file.id]})
     resp.raise_for_status()
     status = Status.model_validate(resp.json())
-    return status.code == 0
+    return status.errCode == 0
