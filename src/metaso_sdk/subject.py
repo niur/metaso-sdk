@@ -1,3 +1,8 @@
+from pathlib import Path
+from typing import Optional
+
+from streamable import Stream
+
 from .client import client
 from .model import Status, Topic, File
 
@@ -16,17 +21,20 @@ def delete_topic(topic: Topic) -> bool:
     return status.errCode == 0
 
 
-def upload_file(topic: Topic, file):
-    resp = client.put(f"/file/{topic.dir_root_id}", files={"file": file})
-    resp.raise_for_status()
-    file = File.model_validate(resp.json()["data"][0])
-    return file
+def upload_file(topic: Topic, file) -> Optional[File]:
+    resp = client.put(f"/file/{topic.dirRootId}", files={"file": file})
+    json = resp.json()
+    status = Status.model_validate(json)
+    if status.errCode == 0:
+        file = File.model_validate(json["data"][0])
+        return file
 
 
-def get_progress(file: File):
+def update_progress(file: File):
     resp = client.get(f"/file/{file.id}/progress")
     resp.raise_for_status()
-    return resp.json()["data"]
+    file.progress = resp.json()["data"]
+    return file
 
 
 def delete_file(file: File):
@@ -34,3 +42,31 @@ def delete_file(file: File):
     resp.raise_for_status()
     status = Status.model_validate(resp.json())
     return status.errCode == 0
+
+
+def upload_directory(topic: Topic, path: Path, pattern="**/*", *, concurrency=10):
+    def _upload_file(file) -> File:
+        with file.open("rb") as f:
+            return upload_file(topic, f)
+
+    files = list(
+        Stream(Path(path).glob(pattern))
+        .filter(Path.is_file)
+        .map(_upload_file, concurrency=concurrency)
+        .filter(lambda file: file is not None)
+        .observe("files")
+        .catch(finally_raise=True)
+    )
+
+    while True:
+        if (
+            Stream(files)
+            .filter(lambda f: f.progress < 100)
+            .throttle(per_second=10)
+            .foreach(update_progress, concurrency=concurrency)
+            .observe("progress update")
+            .catch(finally_raise=True)
+            .count()
+            == 0
+        ):
+            break
