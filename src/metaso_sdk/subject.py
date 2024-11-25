@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Optional
+from typing import Optional, List
 
 from streamable import Stream
 
@@ -44,7 +44,7 @@ def delete_file(file: File):
     return status.errCode == 0
 
 
-def upload_directory(topic: Topic, path: Path, pattern="**/*", *, concurrency=10):
+def upload_directory(topic: Topic, path: Path, pattern="**/*", *, concurrency=10) -> List[File]:
     def _upload_file(file) -> File:
         with file.open("rb") as f:
             return upload_file(topic, f)
@@ -58,15 +58,4 @@ def upload_directory(topic: Topic, path: Path, pattern="**/*", *, concurrency=10
         .catch(finally_raise=True)
     )
 
-    while True:
-        if (
-            Stream(files)
-            .filter(lambda f: f.progress < 100)
-            .throttle(per_second=10)
-            .foreach(update_progress, concurrency=concurrency)
-            .observe("progress update")
-            .catch(finally_raise=True)
-            .count()
-            == 0
-        ):
-            break
+    return files
