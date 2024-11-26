@@ -17,4 +17,3 @@ python_package_import_name: metaso_sdk
 repository_name: metaso-sdk
 repository_namespace: meta-sota
 repository_provider: github.com
-

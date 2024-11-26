@@ -1,10 +1,10 @@
 from pathlib import Path
-from typing import Optional, List
+from typing import List, Optional
 
 from streamable import Stream
 
 from .client import client
-from .model import Status, Topic, File
+from .model import File, Status, Topic
 
 
 def create_topic(topic: Topic):
@@ -55,7 +55,7 @@ def upload_directory(topic: Topic, path: Path, pattern="**/*", *, concurrency=10
         .map(_upload_file, concurrency=concurrency)
         .filter(lambda file: file is not None)
         .observe("files")
-        .catch(finally_raise=True)
+        .catch(finally_raise=True),
     )
 
     return files

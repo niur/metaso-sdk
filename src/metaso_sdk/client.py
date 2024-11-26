@@ -1,6 +1,6 @@
 import os
-import httpx
 
+import httpx
 
 api_key = os.getenv("METASO_API_KEY", "")
 
