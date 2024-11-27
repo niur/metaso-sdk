@@ -30,6 +30,7 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
+    "httpx-sse>=0.4.0",
     "httpx>=0.27.2",
     "pydantic>=2.10.0",
     "streamable>=1.3.5",

@@ -12,9 +12,7 @@ class Query(BaseModel):
     question: str
     lang: str = "zh"
     sessionId: Optional[str] = None
-    thirdPartyUid: Optional[str] = None
     stream: bool = False
-    engineType: Optional[str] = None
     topicId: Optional[str] = None
     searchTopicId: Optional[str] = None
 
