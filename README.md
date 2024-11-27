@@ -13,6 +13,21 @@ The official Python SDK for https://metaso.cn
 pip install metaso-sdk
 ```
 
+## 配置 METASO_API_KEY
+
+metaso-sdk 从环境变量 `METASO_API_KEY` 读取用于认证的 API 密钥，可以在 shell 里进行设置：
+
+```bash
+export METASO_API_KEY="mk-EE2..."
+```
+
+或者在 Python 代码里进行设置：
+
+```python
+import os
+os.environ["METASO_API_KEY"] = "mk-EE2..."
+```
+
 ## 搜索
 
 ### 搜索问题
