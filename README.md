@@ -7,14 +7,53 @@
 
 The official Python SDK for https://metaso.cn
 
-## Installation
+## 安装
 
 ```bash
 pip install metaso-sdk
 ```
 
-With [`uv`](https://docs.astral.sh/uv/):
+## 搜索
 
-```bash
-uv tool install metaso-sdk
+### 搜索问题
+```python
+from metaso_sdk import search, Query
+search(Query(question="abc"))
+```
+
+### 追问
+
+```python
+search(Query(question="广播公司", sessionId='8550018047390023680'))
+```
+
+### 流式返回
+
+```python
+for chunk in search(Query(question="abc"), stream=True):
+    print(chunk)
+
+...
+{'type': 'heartbeat'}
+{'text': '因此，“abc”可以指代字母表的前三个字母、美籍华裔、美国广播公司、一种音乐记谱法以及一种编程语言。具体含义需要根据上下文来确定。', 'type': 'append-text'}
+```
+
+## 专题
+
+### 递归上传文件夹
+
+```
+from metaso_sdk import create_topic, upload_directory, Topic
+
+topic = create_topic(Topic(name="functional programing"))
+files = upload_directory(topic, "dir")
+```
+
+### 搜索特定专题
+
+```python
+from metaso_sdk import search, Query
+
+query = Query(question="functional")
+search(query, topic=topic)
 ```
