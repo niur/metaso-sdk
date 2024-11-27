@@ -19,7 +19,7 @@ def search(query: Query, *, stream: bool = False, topic: Topic = None):
     if topic is not None:
         query.searchTopicId = topic.id
 
-    if stream or query.stream:
+    if stream:
         query.stream = True
 
     def _gen():
