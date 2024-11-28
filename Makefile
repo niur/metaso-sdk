@@ -1,5 +1,5 @@
 # If you have `direnv` loaded in your shell, and allow it in the repository,
-# the `make` command will point at the `scripts/make` shell script.
+# the `make` command will point at the `scripts/make.py` shell script.
 # This Makefile is just here to allow auto-completion in the terminal.
 
 actions = \
@@ -25,4 +25,4 @@ actions = \
 
 .PHONY: $(actions)
 $(actions):
-	@python scripts/make "$@"
+	@python scripts/make.py "$@"
