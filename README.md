@@ -4,7 +4,7 @@
 [![documentation](https://img.shields.io/badge/docs-mkdocs-708FCC.svg?style=flat)](https://meta-sota.github.io/metaso-sdk/)
 [![pypi version](https://img.shields.io/pypi/v/metaso-sdk.svg)](https://pypi.org/project/metaso-sdk/)
 
-The official Python SDK for https://metaso.cn
+[秘塔AI搜索](https://metaso.cn) Python SDK。在使用这个 SDK 之前，请先通过[API文档专题](https://metaso.cn/s/hXHmJkx)了解 HTTP 接口的更多细节。
 
 ## 安装
 
@@ -38,7 +38,7 @@ search(Query(question="abc"))
 ### 追问
 
 ```python
-search(Query(question="广播公司", sessionId='8550018047390023680'))
+search(Query(question="广播公司", sessionId="8550018047390023680"))
 ```
 
 ### 流式返回
