@@ -132,17 +132,11 @@ plugins:
     type: timeago
 - minify:
     minify_html: !ENV [DEPLOY, false]
-- group:
-    enabled: !ENV [MATERIAL_INSIDERS, false]
-    plugins:
-    - typeset
 
 extra:
   social:
   - icon: fontawesome/brands/github
     link: https://github.com/meta-sota
-  - icon: fontawesome/brands/gitter
-    link: https://gitter.im/metaso-sdk/community
   - icon: fontawesome/brands/python
     link: https://pypi.org/project/metaso-sdk/
   analytics:
