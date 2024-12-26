@@ -16,6 +16,7 @@ class Query(BaseModel):
     topicId: Optional[str] = None
     searchTopicId: Optional[str] = None
     enableMix: bool = False
+    newEngine: bool = False
 
 
 class Topic(BaseModel):
