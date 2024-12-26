@@ -15,6 +15,7 @@ class Query(BaseModel):
     stream: bool = False
     topicId: Optional[str] = None
     searchTopicId: Optional[str] = None
+    enableMix: bool = False
 
 
 class Topic(BaseModel):
