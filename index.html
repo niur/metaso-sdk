@@ -3,124 +3,352 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>秘塔AI专题搜索</title>
+    <title>秘塔搜索 - 完整结果展示</title>
     <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --highlight-color: #e74c3c;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #f5f5f5;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            background: #f8f9fa;
         }
 
         .container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .search-header {
+            padding: 2rem;
+            background: var(--primary-color);
+            color: white;
         }
 
         .search-box {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 1fr 200px 120px;
+            gap: 1rem;
         }
 
-        input[type="text"] {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            font-size: 16px;
+        input {
+            padding: 0.8rem;
+            border: 2px solid #dfe6e9;
+            border-radius: 8px;
+            font-size: 1rem;
         }
 
         button {
-            padding: 10px 20px;
-            background-color: #007bff;
+            background: var(--secondary-color);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: transform 0.2s;
         }
 
         button:hover {
-            background-color: #0056b3;
+            transform: translateY(-1px);
         }
 
-        .result {
-            margin-top: 20px;
-            padding: 20px;
+        .result-container {
+            padding: 2rem;
+        }
+
+        /* 元数据面板 */
+        .meta-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            margin-bottom: 0.3rem;
+        }
+
+        .meta-value {
+            color: var(--primary-color);
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        /* 主要回答区域 */
+        .main-answer {
+            background: #fdfdfd;
             border: 1px solid #eee;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-            min-height: 100px;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            white-space: pre-wrap;
+            line-height: 1.8;
         }
 
-        .loading {
-            display: none;
-            margin: 20px 0;
-            color: #666;
+        .highlight {
+            color: var(--highlight-color);
+            font-weight: 500;
+            cursor: pointer;
+            text-decoration: underline dotted;
+        }
+
+        /* 参考资料样式 */
+        .reference-card {
+            border-left: 3px solid var(--secondary-color);
+            padding: 1rem;
+            margin: 1rem 0;
+            background: #f8fafb;
+            position: relative;
+        }
+
+        .ref-index {
+            position: absolute;
+            right: 1rem;
+            top: 1rem;
+            background: var(--secondary-color);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+        }
+
+        .file-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            background: #e8f4ff;
+            color: var(--secondary-color);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>秘塔AI专题搜索</h1>
-        <div class="search-box">
-            <input type="text" id="question" placeholder="输入您的问题...">
-            <input type="text" id="topicId" placeholder="输入SearchTopicID" style="width: 200px;">
-            <button onclick="search()">搜索</button>
+        <div class="search-header">
+            <h1>秘塔智能搜索</h1>
+            <div class="search-box">
+                <input type="text" id="question" placeholder="输入您的问题..." value="总结一下">
+                <input type="text" id="topicId" placeholder="主题ID" value="8586396157520109568">
+                <button onclick="search()">开始搜索</button>
+            </div>
         </div>
-        <div class="loading" id="loading">正在搜索中...</div>
-        <div class="result" id="result"></div>
+
+        <div class="result-container" id="result-container">
+            <!-- 结果将通过JavaScript填充 -->
+        </div>
     </div>
 
     <script>
-        // 在此处替换你的API密钥
-        const API_KEY = 'your-api-key-here';
+        const CONFIG = {
+            API_KEY: 'mk-15D6B02701A5926F6FA2C9793EDD9CB5',
+            ENDPOINT: 'https://metaso.cn/api/open/search/v2',
+            FILE_BASE: 'https://metaso.cn'
+        };
 
         async function search() {
-            const question = document.getElementById('question').value;
-            const topicId = document.getElementById('topicId').value;
-            const resultDiv = document.getElementById('result');
-            const loading = document.getElementById('loading');
-
+            const question = document.getElementById('question').value.trim();
+            const topicId = document.getElementById('topicId').value.trim();
+            
             if (!question || !topicId) {
-                alert('请输入问题和Topic ID');
+                alert('请填写完整搜索条件');
                 return;
             }
 
-            loading.style.display = 'block';
-            resultDiv.innerHTML = '';
+            showLoading(true);
 
             try {
-                const response = await fetch('https://metaso.cn/api/open/search/v2', {
+                const response = await fetch(CONFIG.ENDPOINT, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${API_KEY}`
+                        'Authorization': `Bearer ${CONFIG.API_KEY}`
                     },
                     body: JSON.stringify({
-                        question: question,
+                        question,
                         searchTopicId: topicId
                     })
                 });
 
-                const data = await response.json();
+                const { errCode, data } = await response.json();
                 
-                if (response.ok) {
-                    // 根据实际API响应结构调整此处
-                    resultDiv.innerHTML = `<h3>搜索结果：</h3><p>${data.result || JSON.stringify(data)}</p>`;
+                if (errCode === 0) {
+                    renderResults(data);
                 } else {
-                    resultDiv.innerHTML = `<p style="color: red">错误：${data.message || '请求失败'}</p>`;
+                    showError(`请求失败 (代码: ${errCode})`);
                 }
             } catch (error) {
-                resultDiv.innerHTML = `<p style="color: red">请求异常：${error.message}</p>`;
+                showError(`网络错误: ${error.message}`);
             } finally {
-                loading.style.display = 'none';
+                showLoading(false);
             }
         }
+
+        function renderResults(data) {
+            const container = document.getElementById('result-container');
+            
+            let html = `
+                <div class="meta-panel">
+                    <div class="meta-item">
+                        <span class="meta-label">会话ID</span>
+                        <span class="meta-value">${data.sessionId}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">剩余额度</span>
+                        <span class="meta-value">${data.balance}</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">结果ID</span>
+                        <span class="meta-value">${data.resultId}</span>
+                    </div>
+                </div>
+
+                <div class="main-answer">
+                    ${formatAnswerText(data.text)}
+                </div>`;
+function renderResults(data) {
+    // ...其他代码保持不变...
+
+    html += `
+        <div class="main-answer">
+            ${processContent(data.text)}
+        </div>`;
+
+    // ...后续代码...
+}
+
+// 新增内容处理函数
+function processContent(text) {
+    // 处理高亮引用
+    let processed = formatAnswerText(text);
+    
+    // 处理图片显示
+    processed = processed.replace(/!\[(.*?)\]\((.*?)\)/g, (match, alt, url) => {
+        const fullUrl = new URL(url, CONFIG.FILE_BASE);
+        return `
+            <div class="image-container">
+                <img src="${fullUrl}" 
+                     alt="${alt || '景点图片'}" 
+                     loading="lazy"
+                     onerror="this.onerror=null;this.src='//via.placeholder.com/400x300?text=图片加载失败'">
+                <div class="image-caption">${alt || '景区实景照片'}</div>
+            </div>`;
+    });
+
+    return processed;
+}
+            if (data.references?.length) {
+                html += `<h3>参考来源 (${data.references.length}个)</h3>`;
+                data.references.forEach(ref => {
+                    html += `
+                    <div class="reference-card">
+                        <div class="ref-index">${ref.index}</div>
+                        <h4>${ref.title}</h4>
+                        
+                        <div style="margin: 0.8rem 0; color: #666;">
+                            <span>类型：${ref.article_type}</span>
+                            <span style="margin: 0 1rem">|</span>
+                            <span>页码：${ref.page}/${ref.total_page}</span>
+                        </div>
+
+                        ${ref.file_meta ? `
+                        <div class="file-badge">
+                            ${getFileIcon(ref.file_meta.type)}
+                            <a href="${CONFIG.FILE_BASE}${ref.file_meta.url}" 
+                               target="_blank"
+                               style="color: inherit">
+                                ${ref.file_meta.type.toUpperCase()}文档
+                            </a>
+                        </div>` : ''}
+                    </div>`;
+                });
+            }
+
+            container.innerHTML = html;
+        }
+
+        function formatAnswerText(text) {
+            // 处理高亮标记 [[1]] → 可点击的引用标记
+            return text.replace(/\[\[(\d+)\]\]/g, (match, id) => 
+                `<span class="highlight" onclick="scrollToRef(${id})">[${id}]</span>`
+            );
+        }
+
+        function scrollToRef(referId) {
+            const refElement = document.querySelector(`[data-refid="${referId}"]`);
+            if (refElement) {
+                refElement.scrollIntoView({ behavior: 'smooth' });
+                refElement.style.animation = 'highlight 1.5s';
+            }
+        }
+
+        function getFileIcon(type) {
+            const icons = {
+                pro: '📘',
+                pdf: '📄',
+                doc: '📝',
+                default: '📎'
+            };
+            return icons[type] || icons.default;
+        }
+
+        function showLoading(show) {
+            // 加载状态显示逻辑...
+        }
+
+        function showError(message) {
+            // 错误显示逻辑...
+        }
     </script>
+    
+
+<script>
+// 在renderResults函数中添加图片处理逻辑
+
+
+// 在CSS样式中添加以下内容
+<style>
+.image-container {
+    margin: 1.5rem 0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    display: block;
+    background: #f0f0f0;
+}
+
+.image-caption {
+    padding: 0.8rem;
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    background: #f8f9fa;
+}
+</style>
+</script>
 </body>
 </html>
