@@ -1,3 +1,10 @@
+mateso Python SDK 的webui_demo项目
+由于官方只提供了接口文档，没有demo和可使用的webui所以创建此项目
+WEB界面由opwenui构建，对接mateso的专题API 目前开发中！
+
+请不用下载此项目，还没完善
+
+
 # metaso-sdk
 
 [![ci](https://github.com/meta-sota/metaso-sdk/workflows/ci/badge.svg)](https://github.com/meta-sota/metaso-sdk/actions?query=workflow%3Aci)
